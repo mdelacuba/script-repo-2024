@@ -1,7 +1,7 @@
 # GETTING READY #
 # ------------- #
 
-## Script able to execute all other R scripts.
+## Script table to execute all other R scripts.
 
 # Loading packages -----------------------------------------------------------
 
