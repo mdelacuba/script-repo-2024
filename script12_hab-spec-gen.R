@@ -337,16 +337,14 @@ taxa.gen50 <- taxa_names(pqs.prev.gen50)
 taxa.gen60 <- taxa_names(pqs.prev.gen60)
 taxa.gen70 <- taxa_names(pqs.prev.gen70)
 
-#--- Make a list of lists:
+#--- Euler diagram with the presence of ASVs across habitats:
+
+# For Antarctic sponges only:
 list.prev <- list(`33% Antarctic sponges` = taxa33,
                   `50% Antarctic sponges` = taxa50,
                   `70% Antarctic sponges` = taxa70)
 # `80% Antarctic sponges` = taxa80, 
 # `90% Antarctic sponges` = taxa90)
-
-#--- Euler diagram with the presence of ASVs across habitats:
-
-# For Antarctic sponges only:
 set.seed(100)                                  
 euler.plot.prev <- plot(euler(list.prev), quantities = FALSE,
                         fills = c("#c6deed", "#8ebedb", "#559dc9"),#, "#dda471", "#c49264"), 
@@ -357,10 +355,11 @@ euler.plot.prev <- plot(euler(list.prev), quantities = FALSE,
                         fontsize = 15)
 #"#DDA471", "#E9D8DC", "#CCA3AD", "#AA6373" | list(fontsize = 20)
 
-# For non-Antarctic sponges only:
+# For non-Antarctic sponges only:                                  
 list.prev.noa <- list(`33% non-Antarctic sponges` = taxa.noa33, 
                       `50% non-Antarctic sponges` = taxa.noa50, 
-                      `70% non-Antarctic sponges` = taxa.noa70)
+                      `70% non-Antarctic sponges` = taxa.noa70)                                  
+set.seed(100)                                  
 euler.plot.noa <- plot(euler(list.prev.noa), quantities = FALSE,
                        fills = c("#f2cfc9", "#e69f94", "#da6f5e"), 
                        legend = list(fontsize = 18, side = "right"), 
@@ -369,10 +368,11 @@ euler.plot.noa <- plot(euler(list.prev.noa), quantities = FALSE,
                        #edges = list(col = c("#fce7d4", "#f9cfa9", "#f6b77e", "#DDA471")),
                        fontsize = 15)
 
-# For all sponges:
+# For all sponges:                                  
 list.prev.gen <- list(`33% sponges` = taxa.gen33, 
                       `50% sponges` = taxa.gen50, 
-                      `70% sponges` = taxa.gen70)
+                      `70% sponges` = taxa.gen70)                                  
+set.seed(100)                                  
 euler.plot.gen <- plot(euler(list.prev.gen), quantities = FALSE,
                        fills = c("#fce7d4", "#f9cfa9", "#f6b77e"), 
                        legend = list(fontsize = 18, side = "right"), 
