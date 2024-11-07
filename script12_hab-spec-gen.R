@@ -347,8 +347,9 @@ list.prev <- list(`33% Antarctic sponges` = taxa33,
 #--- Euler diagram with the presence of ASVs across habitats:
 
 # For Antarctic sponges only:
+set.seed(100)                                  
 euler.plot.prev <- plot(euler(list.prev), quantities = FALSE,
-                        fills = c("#fce7d4", "#f9cfa9", "#f6b77e"),#, "#dda471", "#c49264"), 
+                        fills = c("#c6deed", "#8ebedb", "#559dc9"),#, "#dda471", "#c49264"), 
                         legend = list(fontsize = 18, side = "right"), 
                         labels = list(labels = c("35", "13", "7"), fontsize = 20,
                                       lineheight = 1),
@@ -361,7 +362,7 @@ list.prev.noa <- list(`33% non-Antarctic sponges` = taxa.noa33,
                       `50% non-Antarctic sponges` = taxa.noa50, 
                       `70% non-Antarctic sponges` = taxa.noa70)
 euler.plot.noa <- plot(euler(list.prev.noa), quantities = FALSE,
-                       fills = c("#fce7d4", "#f9cfa9", "#f6b77e" ), 
+                       fills = c("#f2cfc9", "#e69f94", "#da6f5e"), 
                        legend = list(fontsize = 18, side = "right"), 
                        labels = list(labels = c("29", "5", "1"), fontsize = 20, 
                                      lineheight = 1),
@@ -373,7 +374,7 @@ list.prev.gen <- list(`33% sponges` = taxa.gen33,
                       `50% sponges` = taxa.gen50, 
                       `70% sponges` = taxa.gen70)
 euler.plot.gen <- plot(euler(list.prev.gen), quantities = FALSE,
-                       fills = c("#fce7d4", "#f9cfa9", "#f6b77e" ), 
+                       fills = c("#fce7d4", "#f9cfa9", "#f6b77e"), 
                        legend = list(fontsize = 18, side = "right"), 
                        labels = list(labels = c("34", "11", "1"), fontsize = 20, 
                                      lineheight = 1),
