@@ -101,7 +101,7 @@ bar.plot.e <- ggplot(data = pqs.melt.e, aes(x = ID_Species, y = Abundance, fill 
   scale_fill_manual(values = phylum_colors, 
                     limits = rownames(as.matrix(phylum_colors))) +
   ylab("Relative abundance") +
-  labs(x = NULL, fill = NULL) +
+  labs(x = "Sponge samples", fill = NULL) +
   theme(legend.position = "right")
 
 #--- Save HQ image (also can use ggsave() or png() ):
