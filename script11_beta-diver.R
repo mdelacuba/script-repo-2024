@@ -655,7 +655,7 @@ ancombc.plot <- ggplot(ancombc.df22, aes(lcf_abs, taxon, color = association, #l
   scale_x_continuous(expand = c(0, 0))
   # geom_vline(xintercept = 0, size = 0.3)
 
-ancombc.plot.alt <- ggplot(ancombc.df24, aes(lcf, taxon, color = association))+
+ancombc.plot.alt <- ggplot(ancombc.df22, aes(lcf, taxon, color = association))+
   geom_point() + theme_bw() +
   geom_segment( aes(x = 0, xend = lcf, y = taxon, yend = taxon, color = association)) +
   geom_vline(xintercept = 0, size=0.3) + xlab("log2FoldChange") + ylab(NULL) +
