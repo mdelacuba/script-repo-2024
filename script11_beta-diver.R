@@ -345,27 +345,35 @@ wu.phylum.dist <- phyloseq::distance(pqs.phylum.hell, method = "unifrac")
 # metadata <- as(sample_data(pqs), "data.frame")
 # metadata.genus <- as(sample_data(pqs.genus), "data.frame")
 
+#--- Add column of primer set in metadata:
+adiv.mdata$Primer_set_ID <- c(rep("515F-926R_Parada", 33), 
+                              rep("515F-806R_Caporaso", 114),
+                              rep("515F-806R_Parada", 32))                                           
+
 #--- Set a seed:
 set.seed(1000)
 
 # From Bray-Curtis:
-permanova.bray <- adonis2(bray.dist ~ Habitat*Sponge_Family,
+permanova.bray <- adonis2(bray.dist ~ Habitat*Sponge_Family + Primer_set_ID,
                           data = metadata,
                           permutations = 999,
                           strata = metadata$Sequencing_run_ID)
 
-permanova.bray.eco <- adonis2(bray.dist ~ Marine_Ecoregion*Sponge_Family,
+set.seed(1000)                                           
+permanova.bray.eco <- adonis2(bray.dist ~ Marine_Ecoregion*Sponge_Family + Primer_set_ID,
                           data = metadata,
                           permutations = 999,
                           strata = metadata$Sequencing_run_ID)
 
 # From unweighted UniFrac:
-permanova.wunif <- adonis2(wunif.dist ~ Habitat*Sponge_Family,
+set.seed(1000)                                           
+permanova.wunif <- adonis2(wunif.dist ~ Habitat*Sponge_Family + Primer_set_ID,
                            data = metadata,
                            permutations = 999,
                            strata = metadata$Sequencing_run_ID)
 
-permanova.wunif.eco <- adonis2(wunif.dist ~ Marine_Ecoregion*Sponge_Family,
+set.seed(1000)                                           
+permanova.wunif.eco <- adonis2(wunif.dist ~ Marine_Ecoregion*Sponge_Family + Primer_set_ID,
         data = metadata,
         permutations = 999,
         strata = metadata$Sequencing_run_ID)
