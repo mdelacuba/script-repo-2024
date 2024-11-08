@@ -41,11 +41,6 @@ faith <- pd(otu_table(pqs), phy_tree(pqs), include.root = T)
 #--- Join alpha diversity data to metadata:
 adiv.mdata <- data.table(metadata, faith, adiv, keep.rownames = FALSE)
 
-#--- Add column of primer set in metadata:
-adiv.mdata$Primer_set_ID <- c(rep("515F-926R_Parada", 33), 
-                 rep("515F-806R_Caporaso", 114),
-                 rep("515F-806R_Parada", 32))
-
 
 ### Performing LMM and GLMM ----
 
@@ -55,8 +50,7 @@ adiv.mdata$Primer_set_ID <- c(rep("515F-926R_Parada", 33),
 a <- glmer(SR ~ Environment +
              # (1|Sponge_Order) +
              (1|Sponge_Family) +
-             (1|Sequencing_run_ID) +
-             (1|Primer_set_ID), data = adiv.mdata, family = "poisson")
+             (1|Sequencing_run_ID), data = adiv.mdata, family = "poisson")
 tab_model(a)
 summary(a)
 plot_model(a, type = "eff", terms = "Environment", show.data = T)
@@ -65,8 +59,7 @@ plot_model(a, type = "eff", terms = "Environment", show.data = T)
 b <- glmer(SR ~ Habitat +
              # (1|Sponge_Order) +
              (1|Sponge_Family) +
-             (1|Sequencing_run_ID) +
-             (1|Primer_set_ID), data = adiv.mdata, family = "poisson")
+             (1|Sequencing_run_ID), data = adiv.mdata, family = "poisson")
 tab_model(b)
 summary(b)
 plot_model(b, type = "eff", terms = "Habitat", show.data = F)
@@ -77,8 +70,7 @@ plot_model(b, type = "eff", terms = "Habitat", show.data = F)
 c <- lmer(Shannon ~ Environment + 
             # (1|Sponge_Order) +
             (1|Sponge_Family) +
-            (1|Sequencing_run_ID) +
-            (1|Primer_set_ID), data = adiv.mdata)
+            (1|Sequencing_run_ID), data = adiv.mdata)
 tab_model(c)
 summary(c)
 plot_model(c, type = "eff", terms = "Environment", show.data = T)
@@ -87,8 +79,7 @@ plot_model(c, type = "eff", terms = "Environment", show.data = T)
 d <- lmer(Shannon ~ Habitat + 
             # (1|Sponge_Order) +
             (1|Sponge_Family) +
-            (1|Sequencing_run_ID) +
-            (1|Primer_set_ID), data = adiv.mdata)
+            (1|Sequencing_run_ID), data = adiv.mdata)
 tab_model(d)
 summary(d)
 plot_model(d, type = "eff", terms = "Habitat", show.data = F)
@@ -97,8 +88,7 @@ adiv.mdata$jost <- exp(adiv.mdata$Shannon) # Alternative
 
 d1 <- lmer(jost ~ Habitat + 
             (1|Sponge_Family) +
-            (1|Sequencing_run_ID) +
-            (1|Primer_set_ID), data = adiv.mdata)
+            (1|Sequencing_run_ID), data = adiv.mdata)
 tab_model(d1)
 plot_model(d1, type = "eff", terms = "Habitat", show.data = F)
 
@@ -108,16 +98,14 @@ plot_model(d1, type = "eff", terms = "Habitat", show.data = F)
 e <- lmer(Simpson ~ Environment + 
             # (1|Sponge_Order) +
             (1|Sponge_Family) +
-            (1|Sequencing_run_ID) +
-            (1|Primer_set_ID), data = adiv.mdata)
+            (1|Sequencing_run_ID), data = adiv.mdata)
 tab_model(e)
 plot_model(e, type = "eff", terms = "Environment", show.data = T)
 
 f <- lmer(Simpson ~ Habitat +
             # (1|Sponge_Order) +
             (1|Sponge_Family) +
-            (1|Sequencing_run_ID) +
-            (1|Primer_set_ID), data = adiv.mdata)
+            (1|Sequencing_run_ID), data = adiv.mdata)
 tab_model(f)
 summary(f)
 plot_model(f, type = "eff", terms = "Habitat", show.data = T)
@@ -126,8 +114,7 @@ plot_model(f, type = "eff", terms = "Habitat", show.data = T)
 
 pd <- lmer(PD ~ Habitat + 
              (1|Sponge_Family) +
-             (1|Sequencing_run_ID) +
-             (1|Primer_set_ID), data = adiv.mdata)
+             (1|Sequencing_run_ID), data = adiv.mdata)
 tab_model(pd)
 plot_model(pd, type = "eff", terms = "Habitat", show.data = F)
 
