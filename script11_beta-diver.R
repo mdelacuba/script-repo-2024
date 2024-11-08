@@ -343,37 +343,32 @@ wu.phylum.dist <- phyloseq::distance(pqs.phylum.hell, method = "unifrac")
 
 #--- Prepare metadata:
 # metadata <- as(sample_data(pqs), "data.frame")
-# metadata.genus <- as(sample_data(pqs.genus), "data.frame")
-
-#--- Add column of primer set in metadata:
-metadata$Primer_set_ID <- c(rep("515F-926R_Parada", 33), 
-                              rep("515F-806R_Caporaso", 114),
-                              rep("515F-806R_Parada", 32))                                           
+# metadata.genus <- as(sample_data(pqs.genus), "data.frame")                                         
 
 #--- Set a seed:
 set.seed(1000)
 
 # From Bray-Curtis:
-permanova.bray <- adonis2(bray.dist ~ Habitat*Sponge_Family + Primer_set_ID,
+permanova.bray <- adonis2(bray.dist ~ Habitat*Sponge_Family,
                           data = metadata,
                           permutations = 999,
                           strata = metadata$Sequencing_run_ID)
 
 set.seed(1000)                                           
-permanova.bray.eco <- adonis2(bray.dist ~ Marine_Ecoregion*Sponge_Family + Primer_set_ID,
+permanova.bray.eco <- adonis2(bray.dist ~ Marine_Ecoregion*Sponge_Family,
                           data = metadata,
                           permutations = 999,
                           strata = metadata$Sequencing_run_ID)
 
 # From unweighted UniFrac:
 set.seed(1000)                                           
-permanova.wunif <- adonis2(wunif.dist ~ Habitat*Sponge_Family + Primer_set_ID,
+permanova.wunif <- adonis2(wunif.dist ~ Habitat*Sponge_Family,
                            data = metadata,
                            permutations = 999,
                            strata = metadata$Sequencing_run_ID)
 
 set.seed(1000)                                           
-permanova.wunif.eco <- adonis2(wunif.dist ~ Marine_Ecoregion*Sponge_Family + Primer_set_ID,
+permanova.wunif.eco <- adonis2(wunif.dist ~ Marine_Ecoregion*Sponge_Family,
         data = metadata,
         permutations = 999,
         strata = metadata$Sequencing_run_ID)
@@ -563,111 +558,6 @@ dev.off()
 
 png("./results/graphics/lda-leg.png", units = "in", width = 6, height = 1, res = 300)
 legend.lda
-dev.off()
-
-### Performing ANCOM-BC (Genera differentially abundant) ----
-
-#--- Add column of primer set in metadata:
-sample_data(pqs)$Primer_set_ID <- c(rep("515F-926R_Parada", 33), 
-                              rep("515F-806R_Caporaso", 114),
-                              rep("515F-806R_Parada", 32))                                
-
-#--- Run ANCOM-BC:                                           
-ancombc.out <- ancombc(data = pqs, tax_level = "Genus",
-                      formula = "Habitat + Sample_Family + Primer_set_ID", 
-                      p_adj_method = "BH", prv_cut = 0.1, lib_cut = 0,
-                      group = "Habitat",
-                      struc_zero = F,
-                      alpha = 0.01,
-                      global = FALSE, 
-                      n_cl = 6)
-
-#--- View results:
-summary(ancombc.out)
-res.ancombc <- ancombc.out$res
-
-#--- Make dataframe with summary results:
-ancombc.df <- data.frame(taxon = ancombc.out$res$lfc$taxon,
-                              lcf = ancombc.out$res$lfc$`HabitatNon-Antarctic sponge`, 
-                              W = ancombc.out$res$W$`HabitatNon-Antarctic sponge`, 
-                              p_val = ancombc.out$res$p_val$`HabitatNon-Antarctic sponge`, 
-                              q_value = ancombc.out$res$q_val$`HabitatNon-Antarctic sponge`, 
-                              Diff_ab =  ancombc.out$res$diff_abn$`HabitatNon-Antarctic sponge`)
-
-#--- Invert Non-Antarctic habitat:
-ancombc.df$lcf <- ancombc.df$lcf * -1                                           
-
-#--- Add column of association:
-ancombc.df$association <- ifelse(ancombc.df$q_value < 0.05 & 
-                                  ancombc.df$lcf > 0, "Antarctic sponge", "Not significant")
-ancombc.df$association <- ifelse(ancombc.df$q_value < 0.05 & 
-                                  ancombc.df$lcf < 0, "Non-Antarctic sponge", ancombc.df$association)
-
-#--- Extract only significant results:
-ancombc.df <- ancombc.df[ancombc.df$q_value < 0.05,]
-                                           
-#--- Inspect number of significant results per habitat:
-table(ancombc.df$association)
-
-#--- Reorder rows:
-ancombc.df <- ancombc.df[order(ancombc.df$lcf, decreasing = TRUE),]
-
-#--- Extract top12 Antarctic genera:
-ancombc.ant11 <- head(ancombc.df, 11)
-ancombc.ant11$order <- c(1:11)
-
-#--- Extract top12 non-Antarctic genera:
-ancombc.noa11 <- tail(ancombc.df, 11)
-ancombc.noa11 <- ancombc.noa11[order(ancombc.noa11$lcf, decreasing = F),]
-ancombc.noa11$order <- c(12:22)
-                                           
-#--- Join top12 genera of both habitats:
-ancombc.df22 <- rbind(ancombc.ant11, 
-                      ancombc.noa11)
-                                           
-#--- Add column converting log2FoldChange to positive values:
-ancombc.df22$lcf_abs <- abs(ancombc.df22$lcf)
-
-#--- Replace in taxa names:
-ancombc.df22$taxon <- str_replace(ancombc.df22$taxon, "Genus:", "")
-ancombc.df22$taxon <- str_replace(ancombc.df22$taxon, "Family:AE", "AE")
-ancombc.df22$taxon <- str_replace(ancombc.df22$taxon, "Family:", "Unassigned ")
-ancombc.df22$taxon <- str_replace(ancombc.df22$taxon, "Order:SAR", "SAR")
-ancombc.df22$taxon <- str_replace(ancombc.df22$taxon, "Order:", "Unassigned ")
-ancombc.df22$taxon <- str_replace(ancombc.df22$taxon, "Phylum:", "")
-ancombc.df22$taxon <- str_replace(ancombc.df22$taxon, "Class:", "")
-                                                                                    
-#--- Reorder taxa for plotting:
-ancombc.df22$taxon <- reorder(ancombc.df22$taxon, rev(ancombc.df22$order))
-
-# Plot:
-ancombc.plot <- ggplot(ancombc.df22, aes(lcf_abs, taxon, color = association, #lcf
-                                         fill = association)) +
-  geom_bar(stat = "identity", width = 0.8) + 
-  theme_bw() +
-  scale_color_manual(values = colors.hab) +
-  scale_fill_manual(values = colors.hab) +
-  theme(panel.grid.major.y = element_blank(), legend.position = "none",
-        legend.title = element_text(size = 13, face = "bold"),
-        text = element_text(size = 15)) +
-  labs(x = "log2FoldChange", y = NULL, fill = "Enriched group",
-       color = "Enriched group") + 
-  scale_x_continuous(expand = c(0, 0))
-  # geom_vline(xintercept = 0, size = 0.3)
-
-ancombc.plot.alt <- ggplot(ancombc.df22, aes(lcf, taxon, color = association))+
-  geom_point() + theme_bw() +
-  geom_segment( aes(x = 0, xend = lcf, y = taxon, yend = taxon, color = association)) +
-  geom_vline(xintercept = 0, size=0.3) + xlab("log2FoldChange") + ylab(NULL) +
-  scale_color_manual(values = colors.hab)
-
-#--- Save HQ image (also can use ggsave() or png() ):
-png("./results/graphics/ancombc-hab.png", units = "in", width = 6, height = 6, res = 300)
-ancombc.plot
-dev.off()
-
-png("./results/graphics/ancombc-hab-alt.png", units = "in", width = 7, height = 6, res = 300)
-ancombc.plot.alt
 dev.off()
 
                                            
